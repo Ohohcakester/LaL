@@ -66,6 +66,7 @@ def convert(fileName):
         '\\documentclass{article}',
         '\\usepackage{graphicx}',
         '\\usepackage{scrextend}',
+        '\\usepackage{amsmath}',
         '\\begin{document}',
         '\\noindent',
         process(''.join(lines)),
