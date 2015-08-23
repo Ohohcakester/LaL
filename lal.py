@@ -1,5 +1,8 @@
 import os
+import re
 import sys
+
+""" INIT GLOBALS - START """
 
 tempfilename = 'tempfilename.tex'
 
@@ -7,6 +10,15 @@ tempfilename = 'tempfilename.tex'
 NO_NEW_LINE = '%!%NONEWLINE%!%'
 NO_END_LINE = '%!%NOENDLINE%!%'
 
+# Initialisation of Globals
+def init():
+    global isStartTag, isEndTag
+    isStartTag = regexExactMatchFunction('={3,}start={3,}', re.I)
+    isEndTag = regexExactMatchFunction('={3,}end={3,}', re.I)
+
+""" INIT GLOBALS - END """
+    
+    
 def process(s):
     s = s.replace('~\\\\\n'+NO_NEW_LINE,'\n')
     s = s.replace('\\\\\n'+NO_NEW_LINE,'\n')
@@ -23,6 +35,8 @@ def convert(fileName):
     f.close()
     while len(lines) > 0 and len(lines[0]) == 0:
         lines = lines[1:]
+        
+    lines = trimByStartAndEndTags(lines)
         
     def convert(line):
         margin = len(line) - len(line.lstrip())
@@ -84,17 +98,43 @@ def pdflatex(fileName):
         os.startfile(outputFile)
     except Exception as e:
         print('Cannot open file: ' + str(e))
+
+
+def trimByStartAndEndTags(lines):
+    start = 0
+    end = len(lines)
+
+    for i in range(0,len(lines)):
+        line = lines[i]
+        if isStartTag(line):
+            start = i+1
+        elif isEndTag(line):
+            end = i
+    return lines[start:end]
     
 def setExt(fileName, ext):
     if ext[0] == '.': ext = ext[1:]
     return fileName[:fileName.rfind('.')] + '.' + ext
     
+def regexExactMatchFunction(regex, flags = None):
+    if flags == None:
+        prog = re.compile(regex)
+    else:
+        prog = re.compile(regex, flags)
+        
+    def match(string):
+        m = prog.match(string)
+        if m == None: return False
+        return m.string == string
+    return match
+
 def removeIfExists(file):
     try:
         os.remove(file)
     except:
         pass
     
+init()
 if __name__ == '__main__':
     args = sys.argv
     if len(args) != 2:
