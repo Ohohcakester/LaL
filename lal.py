@@ -16,7 +16,13 @@ def init():
     isStartTag = regexExactMatchFunction('={3,}start={3,}', re.I)
     isEndTag = regexExactMatchFunction('={3,}end={3,}', re.I)
 
+noNewLine = [
+]
 """ INIT GLOBALS - END """
+    
+    
+def dontInsertNewLine(line):
+    return line.strip() in noNewLine
     
     
 def process(s):
@@ -61,11 +67,16 @@ def convert(fileName):
                 target,
                 '}\n',
                 '\\end{center}\n'])
+        elif line == '\\newpage':
+            line = '\\newpage \\noindent\n'
         else:
             if len(line.strip()) == 0:
                 line = '~\\\\\n'
             else:
-                line = line + '\\\\\n'
+                if dontInsertNewLine(line):
+                    line = line + '\n'
+                else:
+                    line = line + '\\\\\n'
             
         return line
         
