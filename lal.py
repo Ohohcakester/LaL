@@ -92,6 +92,7 @@ def convert(fileName):
         '\\usepackage{graphicx}',
         '\\usepackage{scrextend}',
         '\\usepackage{amsmath}',
+        '\\usepackage{amsfonts}',
         '\\begin{document}',
         '\\noindent',
         process(''.join(lines)),
