@@ -80,6 +80,7 @@ def convert(fileName):
             
         return line
         
+    lines += [NO_NEW_LINE + NO_END_LINE]
     lines = map(convert, lines)
     
     try:
