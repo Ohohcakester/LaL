@@ -147,13 +147,37 @@ def removeIfExists(file):
     except:
         pass
     
+def isCommandArgument(arg):
+    return arg[0] == '-'
+    
+def initCommands():
+    global commandMap
+    commandMap = {
+        'clean' : cleanUp,
+    }
+    
+def cleanUp():
+    removeIfExists(setExt(tempfilename, '.log'))
+    removeIfExists(setExt(tempfilename, '.aux'))
+    removeIfExists(setExt(tempfilename, '.tex'))
+    
+def processCommand(arg):
+    arg = arg[1:]
+    command = commandMap[arg]
+    command()
+    
+    
+    
 init()
 if __name__ == '__main__':
+    initCommands()
     args = sys.argv
     if len(args) != 2:
         print('Input a file name')
     else:
-        fileName = args[1]
-        convert(fileName)
-        
-        pdflatex(tempfilename)
+        if (isCommandArgument(args[1])):
+            processCommand(args[1])
+        else:
+            fileName = args[1]
+            convert(fileName)            
+            pdflatex(tempfilename)
