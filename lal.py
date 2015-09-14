@@ -94,6 +94,7 @@ def convert(fileName):
         '\\usepackage{scrextend}',
         '\\usepackage{amsmath}',
         '\\usepackage{amsfonts}',
+        '\\usepackage[a4paper]{geometry}'
         '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
         '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
         '\\begin{document}',
