@@ -16,13 +16,24 @@ def init():
     isStartTag = regexExactMatchFunction('={3,}start={3,}', re.I)
     isEndTag = regexExactMatchFunction('={3,}end={3,}', re.I)
 
+noNewLineEnding = [
+'{tabular}',
+'{center}',
+]
 noNewLine = [
+'{',
+'}',
 ]
 """ INIT GLOBALS - END """
     
     
 def dontInsertNewLine(line):
-    return line.strip() in noNewLine
+    if line in noNewLine:
+        return True
+    for ending in noNewLineEnding:
+        if line.endswith(ending):
+            return True
+    return False
     
     
 def process(s):
