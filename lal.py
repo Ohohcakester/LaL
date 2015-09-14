@@ -26,6 +26,7 @@ def dontInsertNewLine(line):
     
     
 def process(s):
+    s = s.replace('\\end{addmargin}\n~\\\\\n', '\\\\\n\\end{addmargin}\n')
     s = s.replace('~\\\\\n'+NO_NEW_LINE,'\n')
     s = s.replace('\\\\\n'+NO_NEW_LINE,'\n')
     s = s.replace(NO_NEW_LINE,'')
