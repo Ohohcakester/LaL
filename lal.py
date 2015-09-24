@@ -19,6 +19,10 @@ def init():
 noNewLineEnding = [
 '{tabular}',
 '{center}',
+'{multicols}',
+]
+noNewLineEndingWithArguments = [
+'{multicols}',
 ]
 noNewLine = [
 '{',
@@ -38,8 +42,17 @@ def dontInsertNewLine(line):
     for ending in noNewLineEnding:
         if line.endswith(ending):
             return True
+    for ending in noNewLineEndingWithArguments:
+        if removeEndBraces(line).endswith(ending):
+            return True
     return False
     
+def removeEndBraces(line):
+    if len(line) < 2: return ''
+    if line[-1] != '}': return ''
+    end = line.rfind('{')
+    if end == -1: return ''
+    return line[:end]
     
 def process(s):
     s = s.replace('\\end{addmargin}\n~\\\\\n', '\\\\\n\\end{addmargin}\n')
@@ -111,6 +124,7 @@ def convert(fileName, layout = 'default'):
         '\\usepackage{scrextend}',
         '\\usepackage{amsmath}',
         '\\usepackage{amsfonts}',
+        '\\usepackage{multicol}',
         ]+layoutSettings[layout]+[
         '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
         '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
