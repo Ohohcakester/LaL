@@ -24,6 +24,11 @@ noNewLine = [
 '{',
 '}',
 ]
+
+layoutSettings = {
+    'default': ['\\usepackage[a4paper]{geometry}'],
+    'narrow': [],
+}
 """ INIT GLOBALS - END """
     
     
@@ -47,7 +52,7 @@ def process(s):
     
     return s
 
-def convert(fileName):
+def convert(fileName, layout = 'default'):
     f = open(fileName)
     lines = f.read().split('\n')
     f.close()
@@ -106,7 +111,7 @@ def convert(fileName):
         '\\usepackage{scrextend}',
         '\\usepackage{amsmath}',
         '\\usepackage{amsfonts}',
-        '\\usepackage[a4paper]{geometry}'
+        ]+layoutSettings[layout]+[
         '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
         '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
         '\\begin{document}',
@@ -162,6 +167,26 @@ def removeIfExists(file):
     except:
         pass
     
+""" COMMANDS - START """
+    
+def cleanUp():
+    removeIfExists(setExt(tempfilename, '.log'))
+    removeIfExists(setExt(tempfilename, '.aux'))
+    removeIfExists(setExt(tempfilename, '.tex'))
+    
+def printArgs(*args):
+    print(','.join(map(str,args)))
+    
+def convertFileWithOption(option):
+    def convertFile(*args):
+        fileName = args[0]
+        convert(fileName, option)            
+        pdflatex(tempfilename)
+    return convertFile
+    
+    
+""" COMMANDS - END """    
+    
 def isCommandArgument(arg):
     return arg[0] == '-'
     
@@ -169,29 +194,28 @@ def initCommands():
     global commandMap
     commandMap = {
         'clean' : cleanUp,
+        'test' : printArgs,
+        'nar' : convertFileWithOption('narrow'),
+        'narr' : convertFileWithOption('narrow'),
+        'narrow' : convertFileWithOption('narrow'),
     }
     
-def cleanUp():
-    removeIfExists(setExt(tempfilename, '.log'))
-    removeIfExists(setExt(tempfilename, '.aux'))
-    removeIfExists(setExt(tempfilename, '.tex'))
-    
-def processCommand(arg):
+def processCommand(args):
+    arg = args[1]
     arg = arg[1:]
     command = commandMap[arg]
-    command()
-    
+    command(*args[2:])
     
     
 init()
 if __name__ == '__main__':
     initCommands()
     args = sys.argv
-    if len(args) != 2:
+    if len(args) < 2:
         print('Input a file name')
     else:
         if (isCommandArgument(args[1])):
-            processCommand(args[1])
+            processCommand(args)
         else:
             fileName = args[1]
             convert(fileName)            
