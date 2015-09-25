@@ -31,8 +31,26 @@ noNewLine = [
 
 layoutSettings = {
     'default': ['\\usepackage[a4paper]{geometry}'],
+    'wide': ['\\usepackage[margin=0.3in]{geometry}'],
     'narrow': [],
+    '2col': ['\\usepackage[a4paper]{geometry}'],
+    '3col': ['\\usepackage[margin=0.3in]{geometry}'],
 }
+layoutSettings_begin = {
+    'default': [],
+    'wide': [],
+    'narrow': [],
+    '2col': ['\\begin{multicols}{2}'],
+    '3col': ['\\begin{multicols}{3}'],
+}
+layoutSettings_end = {
+    'default': [],
+    'wide': [],
+    'narrow': [],
+    '2col': ['\\end{multicols}'],
+    '3col': ['\\end{multicols}'],
+}
+
 """ INIT GLOBALS - END """
     
     
@@ -129,8 +147,10 @@ def convert(fileName, layout = 'default'):
         '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
         '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
         '\\begin{document}',
+        ]+layoutSettings_begin[layout]+[
         '\\noindent',
         process(''.join(lines)),
+        ]+layoutSettings_end[layout]+[
         '\\end{document}'
         ]))
     f.close()
@@ -212,6 +232,11 @@ def initCommands():
         'nar' : convertFileWithOption('narrow'),
         'narr' : convertFileWithOption('narrow'),
         'narrow' : convertFileWithOption('narrow'),
+        'wide' : convertFileWithOption('wide'),
+        '2col' : convertFileWithOption('2col'),
+        '3col' : convertFileWithOption('3col'),
+        '2' : convertFileWithOption('2col'),
+        '3' : convertFileWithOption('3col'),
     }
     
 def processCommand(args):
