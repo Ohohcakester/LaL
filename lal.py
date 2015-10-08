@@ -20,6 +20,8 @@ noNewLineEnding = [
 '{tabular}',
 '{center}',
 '{multicols}',
+'{enumerate}',
+'{itemize}',
 ]
 noNewLineEndingWithArguments = [
 '{multicols}',
