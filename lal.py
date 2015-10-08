@@ -23,6 +23,8 @@ noNewLineEnding = [
 ]
 noNewLineEndingWithArguments = [
 '{multicols}',
+'\section',
+'\subsection',
 ]
 noNewLine = [
 '{',
