@@ -34,6 +34,7 @@ layoutSettings = {
     'wide': ['\\usepackage[margin=0.3in]{geometry}'],
     'narrow': [],
     '2col': ['\\usepackage[a4paper]{geometry}'],
+    '2colw': ['\\usepackage[margin=0.6in]{geometry}'],
     '3col': ['\\usepackage[margin=0.3in]{geometry}'],
 }
 layoutSettings_begin = {
@@ -41,6 +42,7 @@ layoutSettings_begin = {
     'wide': [],
     'narrow': [],
     '2col': ['\\begin{multicols}{2}'],
+    '2colw': ['\\begin{multicols}{2}'],
     '3col': ['\\begin{multicols}{3}'],
 }
 layoutSettings_end = {
@@ -48,6 +50,7 @@ layoutSettings_end = {
     'wide': [],
     'narrow': [],
     '2col': ['\\end{multicols}'],
+    '2colw': ['\\end{multicols}'],
     '3col': ['\\end{multicols}'],
 }
 
@@ -234,8 +237,10 @@ def initCommands():
         'narrow' : convertFileWithOption('narrow'),
         'wide' : convertFileWithOption('wide'),
         '2col' : convertFileWithOption('2col'),
+        '2colw' : convertFileWithOption('2colw'),
         '3col' : convertFileWithOption('3col'),
         '2' : convertFileWithOption('2col'),
+        '2w' : convertFileWithOption('2colw'),
         '3' : convertFileWithOption('3col'),
     }
     
