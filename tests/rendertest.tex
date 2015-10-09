@@ -1,0 +1,83 @@
+_____should not compile \doesnotexist
+\shouldnotcompilethis{
+
+=======start===
+Test Line 1a $\sigma$
+Test Line 1b $\delta$
+
+Test Line $\displaystyle\sum_{i=1}^\infty x_i$ 2a
+Test Line 2b
+    Indentation Test 1a
+    Indentation Test 1b
+    
+    Indentation Test 2a
+    |||hahaha|||
+    Indentation Test 2b
+    
+Test Line 3a $xyz$
+Test Line 3b $\{x_1,x_2,\cdots,x_n\}$
+s
+ t
+  e
+   p
+    s
+
+
+3.
+Take any $a \in B$. Thus $a \in A_\alpha$ for some $\alpha \in I$.
+    Thus $d(x,a) \geq d(x,A_\alpha) \geq \inf \{d(x,A_\alpha) : \alpha \in I\}$.
+Therefore $\inf \{d(x,A_\alpha) : \alpha \in I\}$ is a lower bound for $\{d(x,a) : a \in B\}$.
+Therefore $\inf \{d(x,A_\alpha) : \alpha \in I\} \leq d(x,B)$.
+
+Image Test.
+[img=testimage,70]
+
+Package Test:
+We define $k$ to be any $k \in \mathbb{N}$ s.t. $2^k > \frac{1}{r}$. (always exists as $2^k$ is unbounded for $k \in \mathbb{N}$)
+Now we consider the sequence $a = (a_i)_{i=1}^\infty$, where $a_i = \begin{cases}\frac{1}{2} &\text{ if }i \neq k
+0 &\text{ if }i = k\end{cases}$.
+Test Ceiling $\ceil{\frac{n}{2} + 5}$
+Test Floor $\floor{\frac{n}{2} + 5}$
+%Commented out text, \should not render {{{}}}}}
+%Commented out text, should not \render {{{}}}}}
+%Commented out text, should \not render {{{}}}}}
+
+Regular Text.
+
+\newpage
+
+\textbf{Pseudocode:}
+//Step 1
+//L = ceiling of n/2
+$L \leftarrow (n+1)/2$
+
+//Step 2
+for $i \leftarrow 1$ to $m$ do,
+    if $G[i] \geq L$ then,
+        // Admit group i and reject everyone else.
+        for $j \leftarrow 1$ to $m$ do,
+            if $j == i$,
+                ADMIT(i)
+            else,
+                REJECT(i)
+        return G[i]
+      
+\begin{tabular}{|c|c|c|c|}
+\hline A & B & C & D
+\hline E & F & G & H
+\hline I & J & K & L
+\hline
+\end{tabular}
+      
+    $g_i$ must have been visited at the for loop at some point. At that point, the variable $(admitted \leq s)$, so $(remaining \geq \ceil{\frac{n}{2}} = L)$.
+    
+\begin{center}
+Centered \textbf{text}
+\end{center}
+
+Noncentered Text
+
+===end=====
+___\shouldnotcompilethis
+\end{document}
+\begin{document}}}{{{}}}{{}{}{
