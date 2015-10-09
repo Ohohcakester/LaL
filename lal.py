@@ -25,12 +25,14 @@ noNewLineEnding = [
 ]
 noNewLineEndingWithArguments = [
 '{multicols}',
+'{tabular}',
 '\section',
 '\subsection',
 ]
 noNewLine = [
 '{',
 '}',
+'\hline',
 ]
 
 layoutSettings = {
