@@ -47,10 +47,6 @@ Regular Text.
 \newpage
 
 \textbf{Pseudocode:}
-//Step 1
-//L = ceiling of n/2
-$L \leftarrow (n+1)/2$
-
 //Step 2
 for $i \leftarrow 1$ to $m$ do,
     if $G[i] \geq L$ then,
@@ -61,6 +57,13 @@ for $i \leftarrow 1$ to $m$ do,
             else,
                 REJECT(i)
         return G[i]
+        
+Define $f(x) = \begin{cases}
+1 &\text{ if }x=0
+\frac{1}{q} &\text{ if }x = \frac{p}{q}, p,q \in \mathbb{N},\text{ gcd}(p,q) = 1
+0 &\text{ otherwise}
+\end{cases}$
+For all $x \in [0,1]$.
       
 \begin{tabular}{|c|c|c|c|}
 \hline A & B & C & D
