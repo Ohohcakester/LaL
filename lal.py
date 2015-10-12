@@ -22,6 +22,8 @@ noNewLineEnding = [
 '{multicols}',
 '{enumerate}',
 '{itemize}',
+'{cases}',
+'{matrix}',
 ]
 noNewLineEndingWithArguments = [
 '{multicols}',
