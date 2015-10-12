@@ -1,12 +1,14 @@
 Less Annoying LaTeX
 =========
+Quick and easy LaTeX typesetting for the lazy. When having a nicely-formatted document isn't a priority. (e.g. taking notes, doing assignments, making crib sheets)
+
 How to use
 ---------
 There is only one file, **lal.py**.
 
-To compile a .tex file `"myfile.tex"`, run `python lal.py myfile.tex`.
+To compile a .tex file "myfile.tex", run `python lal.py myfile.tex`.
 
-This will a file called `tempfilename.pdf`. (Yes I know it's weird. I'll change it at some point)
+This will create a file called `tempfilename.pdf`. (Yes I know it's weird. I'll change it at some point)
 
 Requirements
 ---------
