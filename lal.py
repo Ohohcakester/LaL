@@ -168,14 +168,9 @@ def convert(fileName, layout = 'default'):
     
 
 
-def pdflatex(fileName):
-    outputFile = setExt(fileName, 'pdf')
+def pdflatex(fileName, outputFile):
     removeIfExists(outputFile)
-    os.system('pdflatex -halt-on-error ' + fileName)
-    try:
-        os.startfile(outputFile)
-    except Exception as e:
-        print('Cannot open file: ' + str(e))
+    return os.system('pdflatex -halt-on-error ' + fileName)
 
 
 def trimByStartAndEndTags(lines):
@@ -226,7 +221,7 @@ def convertFileWithOption(option):
     def convertFile(*args):
         fileName = args[0]
         convert(fileName, option)            
-        pdflatex(tempfilename)
+        compileAndOpen(fileName)
     return convertFile
     
     
@@ -258,11 +253,22 @@ def processCommand(args):
     command = commandMap[arg]
     command(*args[2:])
     
+def compileAndOpen(fileName):
+    outputFile = setExt(tempfilename, 'pdf')
+    errcode = pdflatex(tempfilename, outputFile)
+    
+    if errcode == 0:
+        try:
+            os.startfile(outputFile)
+        except Exception as e:
+            print('Cannot open file: ' + str(e))
+    sys.exit(errcode)
     
 init()
 if __name__ == '__main__':
     initCommands()
     args = sys.argv
+    
     if len(args) < 2:
         print('Input a file name')
     else:
@@ -270,5 +276,5 @@ if __name__ == '__main__':
             processCommand(args)
         else:
             fileName = args[1]
-            convert(fileName)            
-            pdflatex(tempfilename)
+            convert(fileName)
+            compileAndOpen(fileName)
