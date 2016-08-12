@@ -206,52 +206,89 @@ def removeIfExists(file):
         os.remove(file)
     except:
         pass
+
+
+""" ACTIONS - START """
     
-""" COMMANDS - START """
-    
-def cleanUp():
+def cleanUp(cmdhandler):
     removeIfExists(setExt(tempfilename, '.log'))
     removeIfExists(setExt(tempfilename, '.aux'))
     removeIfExists(setExt(tempfilename, '.tex'))
     
-def printArgs(*args):
-    print(','.join(map(str,args)))
+def printArgs(cmdhandler):
+    print(','.join(map(str,cmdhandler.args)))
     
-def convertFileWithOption(option):
-    def convertFile(*args):
-        fileName = args[0]
-        convert(fileName, option)            
-        compileAndOpen(fileName)
-    return convertFile
+def convertFile(cmdhandler):
+    if len(cmdhandler.args) < 2:
+        print('Input a file name')
+        sys.exit(1)
+    fileName = cmdhandler.args[-1]
+    if (fileName.startswith('-')):
+        print('Input a file name')
+        sys.exit(1)
     
+    convert(fileName, cmdhandler.layout)
+    compileAndOpen(fileName)
     
-""" COMMANDS - END """    
+""" ACTIONS - END """
+
+
+""" COMMANDS - START """
+
+def setLayout(layout):
+    def fun(cmdhandler):
+        cmdhandler.layout = layout
+    return fun
     
-def isCommandArgument(arg):
-    return arg[0] == '-'
-    
-def initCommands():
-    global commandMap
-    commandMap = {
-        'clean' : cleanUp,
-        'test' : printArgs,
-        'nar' : convertFileWithOption('narrow'),
-        'narr' : convertFileWithOption('narrow'),
-        'narrow' : convertFileWithOption('narrow'),
-        'wide' : convertFileWithOption('wide'),
-        '2col' : convertFileWithOption('2col'),
-        '2colw' : convertFileWithOption('2colw'),
-        '3col' : convertFileWithOption('3col'),
-        '2' : convertFileWithOption('2col'),
-        '2w' : convertFileWithOption('2colw'),
-        '3' : convertFileWithOption('3col'),
+def setAction(action):
+    def fun(cmdhandler):
+        cmdhandler.action = action
+    return fun
+
+def initCommands(cmdhandler):
+    cmdhandler.commandMap = {
+        'clean' : setAction(cleanUp),
+        'test' : setAction(printArgs),
+        'nar' : setLayout('narrow'),
+        'narr' : setLayout('narrow'),
+        'narrow' : setLayout('narrow'),
+        'wide' : setLayout('wide'),
+        '2col' : setLayout('2col'),
+        '2colw' : setLayout('2colw'),
+        '3col' : setLayout('3col'),
+        '2' : setLayout('2col'),
+        '2w' : setLayout('2colw'),
+        '3' : setLayout('3col'),
     }
-    
-def processCommand(args):
-    arg = args[1]
-    arg = arg[1:]
-    command = commandMap[arg]
-    command(*args[2:])
+
+""" COMMANDS - END """    
+
+class CommandHandler(object):
+    def __init__(self):
+        self.layout = 'default'
+        self.noOpen = False
+        self.action = convertFile
+        
+        initCommands(self)
+        
+        
+    def processCommand(self, arg):
+        arg = arg[1:]
+        if arg not in self.commandMap:
+            print('Unknown option: -' + arg)
+            sys.exit(1)
+        command = self.commandMap[arg]
+        command(self)
+        
+    def parseArgs(self, args):
+        self.args = args
+        for arg in args:
+            if arg[0] == '-':
+                self.processCommand(arg)
+        
+    def run(self):
+        self.action(self)
+
     
 def compileAndOpen(fileName):
     outputFile = setExt(tempfilename, 'pdf')
@@ -266,15 +303,6 @@ def compileAndOpen(fileName):
     
 init()
 if __name__ == '__main__':
-    initCommands()
-    args = sys.argv
-    
-    if len(args) < 2:
-        print('Input a file name')
-    else:
-        if (isCommandArgument(args[1])):
-            processCommand(args)
-        else:
-            fileName = args[1]
-            convert(fileName)
-            compileAndOpen(fileName)
+    handler = CommandHandler()
+    handler.parseArgs(sys.argv)
+    handler.run()
