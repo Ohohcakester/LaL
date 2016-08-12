@@ -214,9 +214,11 @@ def cleanUp(cmdhandler):
     removeIfExists(setExt(tempfilename, '.log'))
     removeIfExists(setExt(tempfilename, '.aux'))
     removeIfExists(setExt(tempfilename, '.tex'))
+    sys.exit(0)
     
 def printArgs(cmdhandler):
     print(','.join(map(str,cmdhandler.args)))
+    sys.exit(0)
     
 def convertFile(cmdhandler):
     if len(cmdhandler.args) < 2:
@@ -228,7 +230,17 @@ def convertFile(cmdhandler):
         sys.exit(1)
     
     convert(fileName, cmdhandler.layout)
-    compileAndOpen(fileName)
+    
+    outputFile = setExt(tempfilename, 'pdf')
+    errcode = pdflatex(tempfilename, outputFile)
+    
+    if not cmdhandler.noOpen and errcode == 0:
+        try:
+            os.startfile(outputFile)
+        except Exception as e:
+            print('Cannot open file: ' + str(e))
+    
+    sys.exit(errcode)
     
 """ ACTIONS - END """
 
@@ -245,6 +257,9 @@ def setAction(action):
         cmdhandler.action = action
     return fun
 
+def noOpen(cmdhandler):
+    cmdhandler.noOpen = True
+    
 def initCommands(cmdhandler):
     cmdhandler.commandMap = {
         'clean' : setAction(cleanUp),
@@ -259,6 +274,7 @@ def initCommands(cmdhandler):
         '2' : setLayout('2col'),
         '2w' : setLayout('2colw'),
         '3' : setLayout('3col'),
+        'noopen' : noOpen,
     }
 
 """ COMMANDS - END """    
@@ -289,17 +305,6 @@ class CommandHandler(object):
     def run(self):
         self.action(self)
 
-    
-def compileAndOpen(fileName):
-    outputFile = setExt(tempfilename, 'pdf')
-    errcode = pdflatex(tempfilename, outputFile)
-    
-    if errcode == 0:
-        try:
-            os.startfile(outputFile)
-        except Exception as e:
-            print('Cannot open file: ' + str(e))
-    sys.exit(errcode)
     
 init()
 if __name__ == '__main__':
