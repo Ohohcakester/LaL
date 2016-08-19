@@ -62,6 +62,9 @@ layoutSettings_end = {
     '3col': ['\\end{multicols}'],
 }
 
+ERROR = 1
+NO_ERROR = 0
+
 """ INIT GLOBALS - END """
     
     
@@ -220,27 +223,27 @@ def cleanUp(cmdhandler):
     removeIfExists(setExt(tempfilename, '.log'))
     removeIfExists(setExt(tempfilename, '.aux'))
     removeIfExists(setExt(tempfilename, '.tex'))
-    sys.exit(0)
+    return NO_ERROR
     
 def printArgs(cmdhandler):
     print(','.join(map(str,cmdhandler.args)))
-    sys.exit(0)
+    return NO_ERROR
     
 def convertFile(cmdhandler):
     if len(cmdhandler.args) < 2:
         print('Input a file name')
-        sys.exit(1)
+        return ERROR
     fileName = cmdhandler.args[-1]
     if (fileName.startswith('-')):
         print('Input a file name')
-        sys.exit(1)
+        return ERROR
     
     convert(fileName, cmdhandler.layout)
     
     outputFile = setExt(fileName, 'pdf')
     if cmdhandler.outputFile == fileName:
         print('Error: outputfile is the same as the input tex file!')
-        sys.exit(1)
+        return ERROR
     
     if cmdhandler.outputFile != None:
         outputFile = cmdhandler.outputFile
@@ -253,7 +256,7 @@ def convertFile(cmdhandler):
         except Exception as e:
             print('Cannot open file: ' + str(e))
     
-    sys.exit(errcode)
+    return errcode
     
 """ ACTIONS - END """
 
@@ -348,11 +351,14 @@ class CommandHandler(object):
         self.args = remainingArgs
         
     def run(self):
-        self.action(self)
+        errcode = self.action(self)
+        if errcode == None: return 0
+        return errcode
 
     
 init()
 if __name__ == '__main__':
     handler = CommandHandler()
     handler.parseArgs(sys.argv)
-    handler.run()
+    errcode = handler.run()
+    sys.exit(errcode)
