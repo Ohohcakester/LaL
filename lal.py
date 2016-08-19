@@ -4,7 +4,7 @@ import sys
 
 """ INIT GLOBALS - START """
 
-tempfilename = 'tempfilename.tex'
+tempfilename = '__generated__tex__.tex'
 
 # Temp variables for process function.
 NO_NEW_LINE = '%!%NONEWLINE%!%'
@@ -169,8 +169,13 @@ def convert(fileName, layout = 'default'):
 
 
 def pdflatex(fileName, outputFile):
+    tempOutputFile = setExt(fileName, 'pdf')
+    removeIfExists(tempOutputFile)
     removeIfExists(outputFile)
-    return os.system('pdflatex -halt-on-error ' + fileName)
+    errcode = os.system('pdflatex -halt-on-error ' + fileName)
+    if errcode == 0:
+        renameIfExists(tempOutputFile, outputFile)
+    return errcode
 
 
 def trimByStartAndEndTags(lines):
@@ -202,12 +207,13 @@ def regexExactMatchFunction(regex, flags = None):
     return match
 
 def removeIfExists(file):
-    try:
-        os.remove(file)
-    except:
-        pass
+    try: os.remove(file)
+    except: pass
 
-
+def renameIfExists(fromFile, toFile):
+    try: os.rename(fromFile, toFile)
+    except: pass
+        
 """ ACTIONS - START """
     
 def cleanUp(cmdhandler):
@@ -231,7 +237,7 @@ def convertFile(cmdhandler):
     
     convert(fileName, cmdhandler.layout)
     
-    outputFile = setExt(tempfilename, 'pdf')
+    outputFile = setExt(fileName, 'pdf')
     errcode = pdflatex(tempfilename, outputFile)
     
     if not cmdhandler.noOpen and errcode == 0:
