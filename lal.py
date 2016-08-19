@@ -238,6 +238,13 @@ def convertFile(cmdhandler):
     convert(fileName, cmdhandler.layout)
     
     outputFile = setExt(fileName, 'pdf')
+    if cmdhandler.outputFile == fileName:
+        print('Error: outputfile is the same as the input tex file!')
+        sys.exit(1)
+    
+    if cmdhandler.outputFile != None:
+        outputFile = cmdhandler.outputFile
+    
     errcode = pdflatex(tempfilename, outputFile)
     
     if not cmdhandler.noOpen and errcode == 0:
@@ -266,6 +273,9 @@ def setAction(action):
 def noOpen(cmdhandler):
     cmdhandler.noOpen = True
     
+def setOutputFile(cmdhandler, outputFile):
+    cmdhandler.outputFile = outputFile
+    
 def initCommands(cmdhandler):
     cmdhandler.commandMap = {
         'clean' : setAction(cleanUp),
@@ -281,15 +291,39 @@ def initCommands(cmdhandler):
         '2w' : setLayout('2colw'),
         '3' : setLayout('3col'),
         'noopen' : noOpen,
+        'out': waitForArgument(setOutputFile),
     }
 
-""" COMMANDS - END """    
+""" COMMANDS - END """
+
+def waitForArgument(action):
+    def fun(cmdhandler):
+        cmdhandler.argumentHandler.setCommand(action)
+    return fun
+        
+
+class ArgumentHandler(object):
+    def __init__(self):
+        self.command = None
+
+    def setCommand(self, command):
+        self.command = command
+        
+    def hasCommandLoaded(self):
+        return self.command != None
+    
+    def runWithArgument(self, cmdhandler, arg):
+        self.command(cmdhandler, arg)
+        self.command = None
+    
 
 class CommandHandler(object):
     def __init__(self):
         self.layout = 'default'
         self.noOpen = False
         self.action = convertFile
+        self.outputFile = None
+        self.argumentHandler = ArgumentHandler()
         
         initCommands(self)
         
@@ -303,10 +337,15 @@ class CommandHandler(object):
         command(self)
         
     def parseArgs(self, args):
-        self.args = args
+        remainingArgs = []
         for arg in args:
-            if arg[0] == '-':
+            if self.argumentHandler.hasCommandLoaded():
+                self.argumentHandler.runWithArgument(self, arg)
+            elif arg[0] == '-':
                 self.processCommand(arg)
+            else:
+                remainingArgs.append(arg)
+        self.args = remainingArgs
         
     def run(self):
         self.action(self)
