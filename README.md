@@ -20,7 +20,7 @@ This will generate a file `myfile.pdf`.
 Requirements
 ---------
 * Python 3
-* pdflatex
+* pdflatex (added to path)
 
 Arguments
 ---------
