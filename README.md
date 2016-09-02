@@ -2,29 +2,41 @@ Less Annoying LaTeX
 =========
 Quick and easy LaTeX typesetting for the lazy. When having a nicely-formatted document isn't a priority. (e.g. taking notes, doing assignments, making crib sheets)
 
+For example, using LaL, you can compile a .tex file that looks like this:
+```
+Hello, world!
+$x = 3$
+```
+(note the absence of nonsense like `\begin{document}` etc.)
+
 How to use
 ---------
 There is only one file, **lal.py**.
 
 To compile a .tex file "myfile.tex", run `python lal.py myfile.tex`.
 
-This will create a file called `tempfilename.pdf`. (Yes I know it's weird. I'll change it at some point)
+This will generate a file `myfile.pdf`.
 
 Requirements
 ---------
 * Python 3
-* pdflatex
+* pdflatex (added to path)
 
 Arguments
 ---------
-* `python lal.py -OPTION myfile.tex`
+#### `python lal.py <OPTIONS> myfile.tex`
+* Layouts
  - `-narr`: Narrow
  - `-wide`: Wide
  - `-2col`: 2 Columns
  - `-3col`: 3 Columns
  - `-2colw`: 2 Columns, wide
 
-* `python lal.py -clean`
+* Options
+ - `-noopen`: Don't open the file after compilation
+ - `-out <filename.pdf>`: Specify an output filename
+
+#### `python lal.py -clean`
  - Cleans up the temporary files that come with compiling the .tex
 
 Other Syntax
@@ -43,4 +55,4 @@ Other Syntax
 
 Development
 --------
-At the moment, the script is pretty hacky. At some point I'll clean up the code. As of now, it's just there for the utility.
+Most of the logic is still pretty hacky. But it works, for most cases, as of now.
