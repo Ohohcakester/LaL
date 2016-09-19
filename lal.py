@@ -25,6 +25,7 @@ noNewLineEnding = [
 '{cases}',
 '{matrix}',
 '{pmatrix}',
+'{align*}',
 ]
 noNewLineEndingWithArguments = [
 '{multicols}',
