@@ -90,6 +90,7 @@ def removeEndBraces(line):
     return line[:end]
     
 def process(s):
+    s = s.replace('\n\\columnbreak', '\n\\vfill\\columnbreak')
     s = s.replace('\\end{addmargin}\n~\\\\\n', '\\\\\n\\end{addmargin}\n')
     s = s.replace('~\\\\\n'+NO_NEW_LINE,'\n')
     s = s.replace('\\\\\n'+NO_NEW_LINE,'\n')
