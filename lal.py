@@ -16,6 +16,11 @@ def init():
     isStartTag = regexExactMatchFunction('={3,}start={3,}', re.I)
     isEndTag = regexExactMatchFunction('={3,}end={3,}', re.I)
 
+# By default, we include all:
+#     \begin + noNewLineEnding
+# and \begin + noNewLineEndingWithArguments
+noPrecedingNewLine = [
+]
 noNewLineEnding = [
 '{tabular}',
 '{center}',
@@ -82,6 +87,15 @@ def dontInsertNewLine(line):
             return True
     return False
     
+    
+def dontPrecedeWithNewLine(line):
+    if line in noPrecedingNewLine:
+        return True
+    if line.startswith('\\begin'):
+        if dontInsertNewLine(line[len('\\begin'):]):
+            return True
+    return False
+    
 def removeEndBraces(line):
     if len(line) < 2: return ''
     if line[-1] != '}': return ''
@@ -139,10 +153,13 @@ def convert(fileName, layout = 'default'):
             if len(line.strip()) == 0:
                 line = '~\\\\\n'
             else:
+                dontPrecede = dontPrecedeWithNewLine(line)
                 if dontInsertNewLine(line):
                     line = line + '\n'
                 else:
                     line = line + '\\\\\n'
+                if dontPrecede:
+                    line = NO_NEW_LINE + line
             
         return line
         
