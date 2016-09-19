@@ -30,13 +30,14 @@ noNewLineEnding = [
 noNewLineEndingWithArguments = [
 '{multicols}',
 '{tabular}',
-'\section',
-'\subsection',
+'\\section',
+'\\subsection',
 ]
 noNewLine = [
 '{',
 '}',
-'\hline',
+'\\hline',
+'\\columnbreak',
 ]
 
 layoutSettings = {
