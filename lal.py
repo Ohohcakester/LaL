@@ -74,6 +74,12 @@ ERROR = 1
 NO_ERROR = 0
 
 """ INIT GLOBALS - END """
+
+not_empty_str = lambda s : len(s) > 0
+strip_str = lambda s : s.strip()
+    
+def INVALID_SYNTAX(*args):
+    return 'XXX INVALID SYNTAX: ' + ' '.join(map(str, args))
     
     
 def dontInsertNewLine(line):
@@ -114,7 +120,32 @@ def process(s):
     s = s.replace(NO_END_LINE,'')
     
     return s
-
+    
+def generateImages(line):
+    sb = [NO_NEW_LINE, '\\begin{center}\n']
+    
+    tokens = filter(not_empty_str, map(strip_str, line.split('[img=')))
+    for token in tokens:
+        print(token)
+        target = token.strip()
+        if target.endswith(']'): target = target[:-1]
+        else: return INVALID_SYNTAX('Token does not end with "]"')
+        
+        height = '100'
+        if ',' in target:
+            height = target[target.rfind(',')+1:]
+            target = target[:target.rfind(',')]
+        sb += [
+            '\\includegraphics[height=',
+            height,
+            'px]{',
+            target,
+            '}\n'
+        ]
+        
+    sb.append('\\end{center}\n')
+    return ''.join(sb)
+    
 def convert(fileName, layout = 'default'):
     f = open(fileName)
     lines = f.read().split('\n')
@@ -133,20 +164,7 @@ def convert(fileName, layout = 'default'):
                 line,
                 '\n\\end{addmargin}\n'])
         elif line.startswith('[img=') and line.endswith(']'):
-            target = line[len('[img='):-len(']')]
-            height = '100'
-            if ',' in target:
-                height = target[target.rfind(',')+1:]
-                target = target[:target.rfind(',')]
-            line = ''.join([
-                NO_NEW_LINE,
-                '\\begin{center}\n',
-                '\\includegraphics[height=',
-                height,
-                'px]{',
-                target,
-                '}\n',
-                '\\end{center}\n'])
+            line = generateImages(line)
         elif line == '\\newpage':
             line = '\\newpage \\noindent\n'
         else:
