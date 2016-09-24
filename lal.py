@@ -126,7 +126,6 @@ def generateImages(line):
     
     tokens = filter(not_empty_str, map(strip_str, line.split('[img=')))
     for token in tokens:
-        print(token)
         target = token.strip()
         if target.endswith(']'): target = target[:-1]
         else: return INVALID_SYNTAX('Token does not end with "]"')
