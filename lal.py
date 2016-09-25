@@ -151,11 +151,18 @@ def generateImages(line):
     sb.append('\\end{center}\n')
     return ''.join(sb)
     
+new_command_starts = [
+    '\\newcommand{',
+    '\\DeclareMathOperator{',
+]
 def isNewCommandLine(line):
-    return line.startswith('\\newcommand{') and \
+    for start in new_command_starts:
+        if line.startswith(start) and \
             line.endswith('}') and \
             line.count('{') >= 2 and \
-            line.count('}') >= 2
+            line.count('}') >= 2:
+            return True
+    return False
             
 def stashNewCommandLine(line):
     global newcommand_definitions
