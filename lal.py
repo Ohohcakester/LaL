@@ -70,6 +70,11 @@ layoutSettings_end = {
     '3col': ['\\end{multicols}'],
 }
 
+newcommand_definitions = [
+    '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
+    '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
+]
+
 ERROR = 1
 NO_ERROR = 0
 
@@ -77,6 +82,7 @@ NO_ERROR = 0
 
 not_empty_str = lambda s : len(s) > 0
 strip_str = lambda s : s.strip()
+is_not_none = lambda s : s != None
     
 def INVALID_SYNTAX(*args):
     return 'XXX INVALID SYNTAX: ' + ' '.join(map(str, args))
@@ -145,6 +151,17 @@ def generateImages(line):
     sb.append('\\end{center}\n')
     return ''.join(sb)
     
+def isNewCommandLine(line):
+    return line.startswith('\\newcommand{') and \
+            line.endswith('}') and \
+            line.count('{') >= 2 and \
+            line.count('}') >= 2
+            
+def stashNewCommandLine(line):
+    global newcommand_definitions
+    newcommand_definitions.append(line)
+    return None
+    
 def convert(fileName, layout = 'default'):
     f = open(fileName)
     lines = f.read().split('\n')
@@ -164,6 +181,8 @@ def convert(fileName, layout = 'default'):
                 '\n\\end{addmargin}\n'])
         elif line.startswith('[img=') and line.endswith(']'):
             line = generateImages(line)
+        elif isNewCommandLine(line):
+            line = stashNewCommandLine(line)
         elif line == '\\newpage':
             line = '\\newpage \\noindent\n'
         else:
@@ -181,7 +200,8 @@ def convert(fileName, layout = 'default'):
         return line
         
     lines += [NO_NEW_LINE + NO_END_LINE]
-    lines = map(convert, lines)
+    lines = ''.join(filter(is_not_none, map(convert, lines)))
+    lines = process(lines)
     
     try:
         os.remove(tempfilename)
@@ -196,12 +216,11 @@ def convert(fileName, layout = 'default'):
         '\\usepackage{amsfonts}',
         '\\usepackage{multicol}',
         ]+layoutSettings[layout]+[
-        '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
-        '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
+        ]+newcommand_definitions+[
         '\\begin{document}',
         ]+layoutSettings_begin[layout]+[
         '\\noindent',
-        process(''.join(lines)),
+        lines,
         ]+layoutSettings_end[layout]+[
         '\\end{document}'
         ]))
