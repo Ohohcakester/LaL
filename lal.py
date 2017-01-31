@@ -70,7 +70,7 @@ layoutSettings_end = {
     '3col': ['\\end{multicols}'],
 }
 
-newcommand_definitions = [
+in_header_definitions = [
     '\\newcommand{\\floor}[1]{\\lfloor #1 \\rfloor}',
     '\\newcommand{\\ceil}[1]{\\lceil #1 \\rceil}',
 ]
@@ -155,18 +155,31 @@ new_command_starts = [
     '\\newcommand{',
     '\\DeclareMathOperator{',
 ]
-def isNewCommandLine(line):
+
+use_package_starts = [
+    '\\usepackage{',
+]
+
+def isInHeaderDefinition(line):
     for start in new_command_starts:
         if line.startswith(start) and \
             line.endswith('}') and \
             line.count('{') >= 2 and \
             line.count('}') >= 2:
             return True
+            
+    for start in use_package_starts:
+        if line.startswith(start) and \
+            line.endswith('}') and \
+            line.count('{') == 1 and \
+            line.count('}') == 1:
+            return True
+        
     return False
             
-def stashNewCommandLine(line):
-    global newcommand_definitions
-    newcommand_definitions.append(line)
+def stashInHeaderDefinition(line):
+    global in_header_definitions
+    in_header_definitions.append(line)
     return None
     
 def convert(fileName, layout = 'default'):
@@ -188,8 +201,8 @@ def convert(fileName, layout = 'default'):
                 '\n\\end{addmargin}\n'])
         elif line.startswith('[img=') and line.endswith(']'):
             line = generateImages(line)
-        elif isNewCommandLine(line):
-            line = stashNewCommandLine(line)
+        elif isInHeaderDefinition(line):
+            line = stashInHeaderDefinition(line)
         elif line == '\\newpage':
             line = '\\newpage \\noindent\n'
         else:
@@ -223,7 +236,7 @@ def convert(fileName, layout = 'default'):
         '\\usepackage{amsfonts}',
         '\\usepackage{multicol}',
         ]+layoutSettings[layout]+[
-        ]+newcommand_definitions+[
+        ]+in_header_definitions+[
         '\\begin{document}',
         ]+layoutSettings_begin[layout]+[
         '\\noindent',
